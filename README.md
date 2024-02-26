@@ -5,9 +5,9 @@ Example of [LVGL](https://github.com/lvgl/lvgl) usage with [LovyanGFX](https://g
 
 ### Tools and frameworks used
 
-- [LVGL v8.3.11](hhttps://github.com/lvgl/lvgl/tree/v8.3.11) 
-- [ESP-IDF v5.1](https://github.com/espressif/esp-idf/tree/release/v5.1)
-- [LovyanGFX 1.1.12](https://github.com/lovyan03/LovyanGFX/tree/1.1.12)
+- [LVGL v9 master branch](https://github.com/lvgl/lvgl/tree/master) 
+- [ESP-IDF v5.3-dev-2087-g5f42493573](https://github.com/espressif/esp-idf/tree/release/v5.1)
+- [LovyanGFX master branch](https://github.com/lovyan03/LovyanGFX/tree/master)
 - [Visual Studio Code](https://code.visualstudio.com/)
 - [ESP-IDF extension for VS Code](https://marketplace.visualstudio.com/items?itemName=espressif.esp-idf-extension)
 
