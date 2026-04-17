@@ -7,5 +7,6 @@
         "target/esp32s3.cfg"
     ],
     "idf.espIdfPathWin": "D:\\DEV\\esp\\master\\esp-idf",
-    "idf.toolsPathWin": "D:\\DEV\\esp\\.espressif"
+    "idf.toolsPathWin": "D:\\DEV\\esp\\.espressif",
+    "idf.currentSetup": "D:\\DEV\\esp\\release-v5.5\\esp-idf"
 }
