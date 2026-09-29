@@ -14,12 +14,7 @@ static const char *TAG = "my-tag";
 
 extern "C" void app_main();
 
-static const uint16_t screenWidth  = 800;
-static const uint16_t screenHeight = 480;
-
-#define DRAW_BUF_SIZE (SCREEN_HOR_RES * SCREEN_VER_RES / 10 * (LV_COLOR_DEPTH / 8))
-static uint32_t draw_buf1[DRAW_BUF_SIZE / 8];
-static uint32_t draw_buf2[DRAW_BUF_SIZE / 8];
+#define DRAW_BUF_SIZE (SCREEN_HOR_RES * (SCREEN_VER_RES / 10) * LV_COLOR_DEPTH)
 
 static LGFX lcd;
 static lv_display_t *disp;
@@ -73,16 +68,26 @@ static void lv_tick_task(void *arg)
 
 void app_main(void)
 {
-    lcd.init();
+    if (!lcd.init()) {
+        // Typically the RGB framebuffer allocation failed: check CONFIG_SPIRAM (see sdkconfig.defaults).
+        ESP_LOGE(TAG, "LCD init failed (free PSRAM: %u bytes).",
+            (unsigned)heap_caps_get_free_size(MALLOC_CAP_SPIRAM));
+        abort();
+    }
     lcd.initDMA();
     lcd.setRotation(0);
     lcd.setBrightness(255);
     lcd.setColorDepth(LV_COLOR_DEPTH);
 
+    uint8_t *draw_buf1 = static_cast<uint8_t *>(heap_caps_malloc(DRAW_BUF_SIZE, MALLOC_CAP_SPIRAM | MALLOC_CAP_8BIT));
+    assert(draw_buf1);
+    uint8_t *draw_buf2 = static_cast<uint8_t *>(heap_caps_malloc(DRAW_BUF_SIZE, MALLOC_CAP_SPIRAM | MALLOC_CAP_8BIT));
+    assert(draw_buf2);
+
     lv_init();
     disp = lv_display_create(SCREEN_HOR_RES, SCREEN_VER_RES);
     lv_display_set_flush_cb(disp, disp_flush);
-    lv_display_set_buffers(disp, draw_buf1, draw_buf2, sizeof(draw_buf1), LV_DISPLAY_RENDER_MODE_PARTIAL);
+    lv_display_set_buffers(disp, draw_buf1, draw_buf2, DRAW_BUF_SIZE, LV_DISPLAY_RENDER_MODE_PARTIAL);
 
     indev = lv_indev_create();
     lv_indev_set_type(indev, LV_INDEV_TYPE_POINTER);
