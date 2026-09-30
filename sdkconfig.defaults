@@ -1,11 +1,24 @@
 # Sunton ESP32-8048S050: ESP32-S3 N16R8 (16MB flash, 8MB octal PSRAM)
-# LovyanGFX Panel_RGB allocates its 800x480 framebuffer in PSRAM.
+# esp_lcd_rgb_panel allocates two 800x480 framebuffers (num_fbs=2) in PSRAM.
+
+# Display backend: see main/Kconfig.projbuild. ESP_LCD is the tear-free,
+# double-buffered implementation; LOVYANGFX is kept as a single-buffer
+# reference/fallback. Switch with `idf.py menuconfig` ->
+# "Display Backend Configuration".
+CONFIG_DISPLAY_BACKEND_ESP_LCD=y
+
 CONFIG_ESPTOOLPY_FLASHSIZE_16MB=y
 CONFIG_ESPTOOLPY_FLASHFREQ_80M=y
 CONFIG_SPIRAM=y
 CONFIG_SPIRAM_MODE_OCT=y
 CONFIG_SPIRAM_SPEED_80M=y
 CONFIG_ESP_DEFAULT_CPU_FREQ_MHZ_240=y
+
+# Without this, if PSRAM ever can't feed the RGB DMA fast enough for one frame,
+# the resulting desync is never corrected and accumulates forever (image drifts
+# further every frame). With it, the GDMA is resynced every VBlank so any such
+# glitch is at worst a single frame, never permanent.
+CONFIG_LCD_RGB_RESTART_IN_VSYNC=y
 
 # LVGL
 CONFIG_LV_COLOR_DEPTH_16=y

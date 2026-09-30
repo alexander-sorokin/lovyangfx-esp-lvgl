@@ -1,0 +1,25 @@
+menu "Display Backend Configuration"
+
+choice DISPLAY_BACKEND
+    prompt "LCD display backend"
+    default DISPLAY_BACKEND_ESP_LCD
+    help
+        Selects which driver draws to the 800x480 RGB-parallel LCD panel.
+
+    config DISPLAY_BACKEND_ESP_LCD
+        bool "ESP-IDF native RGB panel driver (esp_lcd_rgb_panel, double-buffered)"
+        help
+            Drives the panel via ESP-IDF's esp_lcd_new_rgb_panel with num_fbs=2,
+            giving true vsync-gated double buffering. No tearing. Recommended.
+
+    config DISPLAY_BACKEND_LOVYANGFX
+        bool "LovyanGFX Panel_RGB/Bus_RGB driver (single buffer)"
+        help
+            Drives the panel via LovyanGFX's hand-rolled LCD_CAM+GDMA driver
+            with a single, continuously-scanned PSRAM frame buffer. Kept as a
+            reference/fallback: this driver has no vsync-gated buffer swap, so
+            heavy redraws (e.g. scrolling) can tear.
+
+endchoice
+
+endmenu
